@@ -1,0 +1,27 @@
+{
+  "name": "interview-code-challenge",
+  "version": "1.0.0",
+  "description": "A tower-defense game simulator",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brianbauer42/interview-code-challenge.git"
+  },
+  "author": "Brian Bauer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brianbauer42/interview-code-challenge/issues"
+  },
+  "homepage": "https://github.com/brianbauer42/interview-code-challenge#readme",
+  "dependencies": {
+    "chance": "^1.0.11",
+    "lodash": "^4.17.4",
+    "mocha": "^3.5.3",
+    "should": "^13.1.0",
+    "winston": "^2.3.1"
+  }
+}
