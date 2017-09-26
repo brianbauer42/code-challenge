@@ -28,7 +28,7 @@ In case of loss, calculate the minimal firing range to win the game agains same 
 
 ## Sample:
 
-#Sample Input 
+### Sample Input 
 ```
 50m 
 BotA 100m 10m
@@ -36,7 +36,7 @@ BotB 50m 20m
 BotC 30m 20m
 ```
 
-# Sample Output
+### Sample Output
 ```
 Firing range is 50m
 Turn 1: Kill BotC at 30m
