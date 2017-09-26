@@ -8,8 +8,7 @@ cd interview-code-challenge
 npm install
 node gameLauncher [inputfile]
 ```
-An example input file will be automatically selected if none is specified.
-
+An example input file will be automatically selected if none is specified. Several samples have been included.
 
 
 # Problem Statement:
