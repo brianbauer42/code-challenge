@@ -4,26 +4,29 @@ var path = require('path');
 var Enemy = require('./Enemy.js');
 var Game = require('./Game.js');
 
-var inputSource = process.argv.length >= 3 ? path.resolve(process.argv[2]) : path.resolve('./sample_input.txt');
+var checkInput = function() {
+    if (process.argv.length >= 3 && fs.existsSync(path.resolve(process.argv[2]))) {
+        return (path.resolve(process.argv[2]));
+    } else if (process.argv.length >= 3) {
+        console.log("File not found: " + process.argv[2]);   
+        process.exit(1);        
+    } else {
+        return (path.resolve('./sample_input.txt'));        
+    }
+}
 
+var inputSource = checkInput();
 var rl = readline.createInterface({
     input: fs.createReadStream(inputSource)
-    // ,output: process.stdout
 });
-
 var distanceFormat = new RegExp(/[0-9]+m/);
-
-// Returns the primitive value of a string that matches distanceFormat RegExp.
-// A string '33m' becomes int 33.
-var convertDistToNum = function (line) {
-    return (line.substring(0, line.length - 1).valueOf());
-};
 
 var readEnemy = function (line) {
     split = line.trim().split(' ');
     if (split.length === 3 && split[1].match(distanceFormat) && split[2].match(distanceFormat)) {
-        return (new Enemy(split[0], convertDistToNum(split[1]), convertDistToNum(split[2])));        
+        return (new Enemy(split[0], parseInt(split[1]), parseInt(split[2])));        
     } else {
+        console.log("a", split);
         exitFailure();
     }
 };
@@ -41,7 +44,6 @@ var inputIsValid = function(firingRange, enemies) {
 };
 
 var exitFailure = function() {
-    rl.close();
     console.log("Bad input! Exiting!");
     process.exit(1);
 }
@@ -55,14 +57,13 @@ var readInput = function() {
     rl.on('line', function (line) {
         ++linesRead;
         if (linesRead === 1 && line.match(distanceFormat)) {
-            firingRange = convertDistToNum(line);
+            firingRange = parseInt(line);
         } else if (linesRead > 1) {
             enemies.push(readEnemy(line));
         } else {
             exitFailure();
         }
     }).on('close', function() {
-        console.log(enemies);
         if (inputIsValid(firingRange, enemies)) {
             var game = new Game(firingRange, enemies);
             game.start();

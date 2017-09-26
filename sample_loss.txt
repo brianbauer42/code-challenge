@@ -1,0 +1,3 @@
+5m
+BotA 10m 5m
+BotB 10m 5m
