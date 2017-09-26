@@ -3,7 +3,7 @@
 
 # To launch:
 ```
-git clone https://github.com/brianbauer42/interview-code-challenge.git
+git clone https://github.com/brianbauer42/code-challenge.git
 cd interview-code-challenge
 npm install
 node gameLauncher [inputfile]
