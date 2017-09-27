@@ -4,7 +4,7 @@
   "description": "A tower-defense game simulator",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node node_modules/mocha/bin/mocha",
     "start": "node server.js"
   },
   "repository": {
@@ -18,10 +18,10 @@
   },
   "homepage": "https://github.com/brianbauer42/interview-code-challenge#readme",
   "dependencies": {
-    "chance": "^1.0.11",
-    "lodash": "^4.17.4",
+    "chance": "^1.0.11"
+  },
+  "devDependencies": {
     "mocha": "^3.5.3",
-    "should": "^13.1.0",
-    "winston": "^2.3.1"
+    "should": "^13.1.0"
   }
 }

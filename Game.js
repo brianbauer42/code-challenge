@@ -1,13 +1,14 @@
 var gameStatusEnum = Object.freeze({ ENDED: 0, ACTIVE: 1 });
 
-var Game = function (firingRange, enemies) {
-    this.firingRange = firingRange;
-    this.liveEnemies = JSON.parse(JSON.stringify(enemies));     // Ugly, but creates a deep copy of an array without methods.
+var Game = function (input) {
+    this.recursion = input.recursion;
+    this.firingRange = input.firingRange;
+    this.liveEnemies = JSON.parse(JSON.stringify(input.enemies));     // Ugly, but creates a deep copy of an array without methods.
     this.defeatedEnemies = [];
     this.turnCount = 0;
     this.gameStatus = gameStatusEnum.ACTIVE;
     this.enemyReachedTower = false;
-    this.originalEnemiesCopy = JSON.parse(JSON.stringify(enemies));
+    this.originalEnemiesCopy = JSON.parse(JSON.stringify(input.enemies));
 
     this.findBestTarget= function() {
         var bestTarget = this.liveEnemies[0];
@@ -73,7 +74,7 @@ var Game = function (firingRange, enemies) {
         while (sortedEnemies.length > 0) {            
             while (sortedEnemies.length > 0 && sortedEnemies[0].startingTurnsFromTower === simTurnCount) {
                 sortedEnemies.shift();
-                ++enemiesAtTower
+                ++enemiesAtTower;
             }
             avgEnemiesPerTurn = enemiesAtTower / simTurnCount;            
             if (avgEnemiesPerTurn > 1) {
@@ -87,6 +88,9 @@ var Game = function (firingRange, enemies) {
     };
 
     this.playerLoses = function() {
+        if (this.recursion === false) {
+            return ;
+        }
         console.log("Computer wins in " + this.turnCount + " turns");
         if (!this.isPossibleToWinGame()) {
             console.log("Player could not have won regardless of firing range");            
@@ -94,10 +98,14 @@ var Game = function (firingRange, enemies) {
             var suppressedConsoleLog = console.log;        
             console.log = function() {};                // Disable console.log
 
-            var reqRange = this.firingRange;
-            var turnsToWin = 0;
-            while (!turnsToWin) {
-                var newGameSim = new Game(++reqRange, enemies.slice());
+            var reqRange = input.firingRange;
+            var turnsToWin = -1;
+            while (turnsToWin === -1) {
+                var newGameSim = new Game({
+                    firingRange: ++reqRange, 
+                    enemies: input.enemies,
+                    recursion: false
+                });
                 turnsToWin = newGameSim.start();
             }
 
@@ -115,12 +123,13 @@ var Game = function (firingRange, enemies) {
         }
     };
 
-    // If player loses, return 0, else return number of turns taken to win.
+    // If player loses, return -1, else return number of turns taken to win.
+    // This return value is important to playerLoses() when calculating the minimum range required to win.
     this.start = function() {
-        console.log("Firing range is " + firingRange + "m");
+        console.log("Firing range is " + this.firingRange + "m");
         this.gameLoop();
         if (this.enemyReachedTower) {
-            return (0);
+            return (-1);
         } else {
             return (this.turnCount)            
         }

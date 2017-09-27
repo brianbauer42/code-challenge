@@ -58,6 +58,7 @@ var readInput = function() {
         ++linesRead;
         if (linesRead === 1 && line.match(distanceFormat)) {
             firingRange = parseInt(line);
+            console.log(line);
         } else if (linesRead > 1) {
             enemies.push(readEnemy(line));
         } else {
@@ -65,7 +66,11 @@ var readInput = function() {
         }
     }).on('close', function() {
         if (inputIsValid(firingRange, enemies)) {
-            var game = new Game(firingRange, enemies);
+            var game = new Game({
+                firingRange: firingRange,
+                enemies: enemies,
+                recursion: true
+            });
             game.start();
         } else {
             exitFailure();
@@ -74,3 +79,10 @@ var readInput = function() {
 }
 
 readInput();
+
+module.exports = {
+    readInput: readInput,
+    inputIsValid: inputIsValid,
+    readEnemy: readEnemy,
+    checkInput: checkInput
+}
