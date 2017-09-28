@@ -3,8 +3,8 @@
 
 # To launch:
 ```
-git clone https://github.com/brianbauer42/interview-code-challenge.git
-cd interview-code-challenge
+git clone https://github.com/brianbauer42/code-challenge.git
+cd code-challenge
 npm install
 npm start
   OR 
@@ -29,18 +29,22 @@ In case of loss, calculate the minimal firing range to win the game agains same 
 
 ## Sample:
 
-#Sample Input 
+### Sample Input 
+```
 50m 
 BotA 100m 10m
 BotB 50m 20m
 BotC 30m 20m
+```
 
-# Sample Output
+### Sample Output
+```
 Firing range is 50m
 Turn 1: Kill BotC at 30m
 Turn 2: Kill BotB at 30m
 Turn 6: Kill BotA at 50m
 You win in 6 turns
+```
 
 ## Tasks
 - Write this game to be executed on NodeJs 0.12.14
