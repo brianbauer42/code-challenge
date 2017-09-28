@@ -1,6 +1,7 @@
+var winston = require('winston');
 var gameStatusEnum = Object.freeze({ ENDED: 0, ACTIVE: 1 });
 
-var Game = function (input) {
+var Game = function (input, logger) {
     this.recursion = input.recursion;
     this.firingRange = input.firingRange;
     this.liveEnemies = JSON.parse(JSON.stringify(input.enemies));     // Ugly, but creates a deep copy of an array without methods.
@@ -22,7 +23,7 @@ var Game = function (input) {
     };
 
     this.reportKill = function (enemy) {
-        console.log("Turn " + this.turnCount + ": Kill " + enemy.name + " at " + enemy.distanceFromTower + "m");
+        logger.info("Turn " + this.turnCount + ": Kill " + enemy.name + " at " + enemy.distanceFromTower + "m");
     };
 
     this.playerTurn = function() {
@@ -49,15 +50,17 @@ var Game = function (input) {
         if (this.liveEnemies.length === 0) {
             this.gameStatus = gameStatusEnum.ENDED;
             this.playerWins();
+            return (1);
         } else if (this.enemyReachedTower === true) {
             this.gameStatus = gameStatusEnum.ENDED;
             this.playerLoses();
+            return (-1);
         }
+        return (0)
     };
 
     this.playerWins = function() {
-        console.log("You win in " + this.turnCount + " turns");
-        return (this.turnCount);
+        logger.info("You win in " + this.turnCount + " turns");
     };
 
     // Simulates the enemies advancing without a tire firing and for each simulated turn, updates the 
@@ -71,12 +74,13 @@ var Game = function (input) {
         var avgEnemiesPerTurn = 0;
         var enemiesAtTower = 0;
         var simTurnCount = 0
-        while (sortedEnemies.length > 0) {            
+        while (sortedEnemies.length > 0) {
             while (sortedEnemies.length > 0 && sortedEnemies[0].startingTurnsFromTower === simTurnCount) {
                 sortedEnemies.shift();
                 ++enemiesAtTower;
             }
-            avgEnemiesPerTurn = enemiesAtTower / simTurnCount;            
+            avgEnemiesPerTurn = enemiesAtTower / simTurnCount;
+
             if (avgEnemiesPerTurn > 1) {
                 // Game is impossible to win, Would have to fire more than once per turn!
                 return (false);
@@ -91,12 +95,15 @@ var Game = function (input) {
         if (this.recursion === false) {
             return ;
         }
-        console.log("Computer wins in " + this.turnCount + " turns");
+        logger.info("Computer wins in " + this.turnCount + " turns");
         if (!this.isPossibleToWinGame()) {
-            console.log("Player could not have won regardless of firing range");            
+            logger.info("Player could not have won regardless of firing range");
+            return (-1);
         } else {
-            var suppressedConsoleLog = console.log;        
-            console.log = function() {};                // Disable console.log
+            var dummyLogger = new (winston.Logger)({
+                transports: [],
+                level: 'error'
+            });
 
             var reqRange = input.firingRange;
             var turnsToWin = -1;
@@ -105,12 +112,11 @@ var Game = function (input) {
                     firingRange: ++reqRange, 
                     enemies: input.enemies,
                     recursion: false
-                });
+                }, dummyLogger);
                 turnsToWin = newGameSim.start();
             }
-
-            console.log = suppressedConsoleLog;         // Enable console.log
-            console.log("You could have won in " + turnsToWin + " turns with firing range of " + reqRange);
+            logger.info("You could have won in " + turnsToWin + " turns with firing range of " + reqRange);
+            return (turnsToWin);
         }
     };
 
@@ -126,7 +132,7 @@ var Game = function (input) {
     // If player loses, return -1, else return number of turns taken to win.
     // This return value is important to playerLoses() when calculating the minimum range required to win.
     this.start = function() {
-        console.log("Firing range is " + this.firingRange + "m");
+        logger.info("Firing range is " + this.firingRange + "m");
         this.gameLoop();
         if (this.enemyReachedTower) {
             return (-1);

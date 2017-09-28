@@ -6,11 +6,11 @@
 git clone https://github.com/brianbauer42/interview-code-challenge.git
 cd interview-code-challenge
 npm install
+npm start
+  OR 
 node gameLauncher [inputfile]
 ```
-An example input file will be automatically selected if none is specified.
-
-
+`npm start` generates random input, while `node gameLauncher [inputFile]` allows a user to specify an input file.
 
 # Problem Statement:
 We will simulate a game where the goal is to kill the enemies by using a tower.  You need to kill enemies as quickly as possible. 
