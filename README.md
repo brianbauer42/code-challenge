@@ -12,6 +12,9 @@ node gameLauncher [inputfile]
 ```
 `npm start` generates random input, while `node gameLauncher [inputFile]` allows a user to specify an input file.
 
+# To run unit tests
+```npm test```
+
 # Problem Statement:
 We will simulate a game where the goal is to kill the enemies by using a tower.  You need to kill enemies as quickly as possible. 
 At each turn, first you fire one time, then each enemy moves to the tower. 
